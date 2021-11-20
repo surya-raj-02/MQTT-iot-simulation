@@ -10,17 +10,17 @@ client.connect(mqttBroker)
 
 print("Connected to MQTT server!!!")
 
-topic_list = [
+topic = [
     "iot-assignemnt-sss/ultra-sensor", "iot-assignemnt-sss/force-sensor",
     "iot-assignemnt-sss/gas-sensor", "iot-assignemnt-sss/motion-sensor"
 ]
-topic = "iot-assignment-sss"
+topic1 = "iot-assignment-sss"
 
 flag = int(input("Select '1' for sending data manually and '2' for sending through file:"))
 if flag == 1:
     while True:
         data_to_be_sent = input("Enter one hot encoded values in order: ultrasonic, force, gas, motion:")
-        client.publish(topic,data_to_be_sent)
+        client.publish(topic1,data_to_be_sent)
         print("Just published " + str(data_to_be_sent) + " to topic " + topic)
         time.sleep(1)
 elif flag == 2:
