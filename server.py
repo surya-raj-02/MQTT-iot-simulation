@@ -15,22 +15,25 @@ def t2(indata):
     
     def task1():
             while 1:
-                print("try")
-                # try:
-                msg = indata.pop()
-                print(msg)
-                emit("got_message", {"data": msg})
-                print("EMITED")
-                # except:
-                #     time.sleep(2)
+                try:
+                    msg = indata.pop()
+                    print(msg)
+                    socketio.emit("send message", {"data": msg})
+                    print("EMITED")
+                    time.sleep(2)
+                except:
+                    time.sleep(2)
 
     @socketio.on('got_message')
     def test_message(message):  # test_message() is the event callback function.
+        print(message)
         emit('my response',{'data': message})  # Trigger a new event called "my response"
+        print("msg sent")
         # that can be caught by another callback later in the program.
 
     @app.route('/')
     def index():
+        
         x = threading.Thread(target=task1)
         x.start()
         return render_template('index.html')
