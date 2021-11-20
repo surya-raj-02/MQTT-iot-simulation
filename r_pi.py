@@ -21,7 +21,7 @@ if flag == 1:
     while True:
         data_to_be_sent = input("Enter one hot encoded values in order: ultrasonic, force, gas, motion:")
         client.publish(topic1,data_to_be_sent)
-        print("Just published " + str(data_to_be_sent) + " to topic " + topic)
+        print("Just published " + str(data_to_be_sent) + " to topic " + topic1)
         time.sleep(1)
 elif flag == 2:
     loc = input("Enter file location:")

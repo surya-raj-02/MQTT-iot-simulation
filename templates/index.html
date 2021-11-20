@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+      integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"
+      integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ=="
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" charset="utf-8">
+      // Client Side Javascript to receive numbers.
+      $(document).ready(function () {
+        // start up the SocketIO connection to the server - the namespace 'test' is also included here if necessary
+        var socket = io.connect(
+          "http://" + document.domain + ":" + location.port + "/test"
+        );
+        // this is a callback that triggers when the "my response" event is emitted by the server.
+        socket.on("my response", function (msg) {
+          $("#log").append("<p>Received: " + msg.data + "</p>");
+        });
+        //example of triggering an event on click of a form submit button
+      });
+    </script>
+  </head>
+  <body>
+    HI
+    <div id="log"></div>
+  </body>
+</html>
