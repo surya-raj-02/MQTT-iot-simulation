@@ -37,6 +37,6 @@ client.loop_start()
 client.message_callback_add("iot-assignemnt-sss/ultra-sensor", on_message)
 client.message_callback_add("iot-assignemnt-sss/force-sensor", on_message2)
 client.connect(mqttBroker)
-
+client.subscribe("iot-assignemnt-sss/#")
 time.sleep(30)
 client.loop_stop()
