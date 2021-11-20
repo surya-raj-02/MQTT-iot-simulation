@@ -14,6 +14,7 @@ topic_list = [
 ]
 
 while True:
+    input()
     randNumber = uniform(20.0, 21.0)
     client.publish("TEMPERATURE", randNumber)
     print("Just published " + str(randNumber) + " to topic TEMPERATURE")
