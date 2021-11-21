@@ -28,6 +28,13 @@
       }
     </script>
     <script type="text/javascript" charset="utf-8">
+      //var path = $.post(Flask.url_for('static', filename='audio_file.mp3'));
+      //var audio = new Audio(path);
+      function turnoff(id) {
+        //$("#ultrapar").addClass("card text-white bg-danger mb-4 column h-100")
+        console.log(id)
+        $("#"+id).parent().parent().removeClass().addClass("card text-white bg-primary mb-4 column h-100")
+      }
       namespace = "/test";
       // Client Side Javascript to receive numbers.
       $(document).ready(function () {
@@ -38,18 +45,22 @@
         // this is a callback that triggers when the "my response" event is emitted by the server.
         socket.on("send ultra", function (msg) {
           $("#ultra").html("<p>Distance: " + msg.data + "</p>");
+          $("#ultrapar").addClass("card text-white bg-danger mb-4 column h-100")
         });
 
         socket.on("send force", function (msg) {
           $("#force").html("<p>Force: " + msg.data + "</p>");
+          $("#forcepar").addClass("card text-white bg-danger mb-4 column h-100")
         });
 
         socket.on("send gas", function (msg) {
           $("#gas").html("<p>Parts per million (Gas): " + msg.data + "</p>");
+          $("#gaspar").addClass("card text-white bg-danger mb-4 column h-100")
         });
 
         socket.on("send motion", function (msg) {
           $("#motion").html("<p>PIR sensor value: " + msg.data + "</p>");
+          $("#motionpar").addClass("card text-white bg-danger mb-4 column h-100")
         });
 
         socket.on("send one-hot", function (msg) {
@@ -67,27 +78,29 @@
       </div>
       <div class="container">
         <div class="row justify-content-center">
-          <div class="col-lg-4 d-flex align-items-stretch">
+          <div class="col-lg-4 d-flex align-items-stretch" >
             <div
               class="card text-white bg-primary mb-4 column h-100"
-              style="max-width: 18rem"
+              style="max-width: 18rem" id="ultrapar"
             >
               <div class="card-header">Ultrasonic Sensor</div>
               <div class="card-body">
                 <h5 class="card-title">Live data from sensor</h5>
                 <p class="card-text" id="ultra">Distance: Data yet to arrive</p>
+                <button type="button" id="ultra" onclick="turnoff(this.id)" class="btn btn-warning" style="margin-top: 50px;">TurnOff</button>
               </div>
             </div>
           </div>
           <div class="col-lg-4 d-flex align-items-stretch">
             <div
               class="card text-white bg-primary mb-4 column h-100"
-              style="max-width: 18rem"
+              style="max-width: 18rem" id="forcepar"
             >
               <div class="card-header">Force Sensor</div>
               <div class="card-body">
                 <h5 class="card-title">Live data from sensor</h5>
                 <p class="card-text" id="force">Force: Data yet to arrive</p>
+                <button type="button" id="force" onclick="turnoff(this.id)" class="btn btn-warning" style="margin-top: 50px;">TurnOff</button>
               </div>
             </div>
           </div>
@@ -96,7 +109,7 @@
           <div class="col-lg-4 d-flex align-items-stretch">
             <div
               class="card text-white bg-primary mb-4 column h-100"
-              style="max-width: 18rem"
+              style="max-width: 18rem" id="gaspar"
             >
               <div class="card-header">Gas Sensor</div>
               <div class="card-body">
@@ -104,13 +117,14 @@
                 <p class="card-text" id="gas">
                   Parts per million (Gas): Data yet to arrive
                 </p>
+                <button type="button" id="gas" onclick="turnoff(this.id)" class="btn btn-warning" style="margin-top: 50px;">TurnOff</button>
               </div>
             </div>
           </div>
           <div class="col-lg-4 d-flex align-items-stretch">
             <div
               class="card text-white bg-primary mb-4 column h-100"
-              style="max-width: 18rem"
+              style="max-width: 18rem" id="motionpar"
             >
               <div class="card-header">Motion Sensor</div>
               <div class="card-body">
@@ -118,6 +132,7 @@
                 <p class="card-text" id="motion">
                   PIR sensor value: Data yet to arrive
                 </p>
+                <button type="button" id="motion" onclick="turnoff(this.id)" class="btn btn-warning" style="margin-top: 50px;">TurnOff</button>
               </div>
             </div>
           </div>
