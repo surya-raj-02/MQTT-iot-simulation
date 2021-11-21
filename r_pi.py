@@ -11,10 +11,10 @@ client.connect(mqttBroker)
 print("Connected to MQTT server!!!")
 
 topic = [
-    "iot-assignemnt-sss/ultra-sensor", "iot-assignemnt-sss/force-sensor",
-    "iot-assignemnt-sss/gas-sensor", "iot-assignemnt-sss/motion-sensor"
+    "iot-assignment-sss/ultra-sensor", "iot-assignment-sss/force-sensor",
+    "iot-assignment-sss/gas-sensor", "iot-assignment-sss/motion-sensor"
 ]
-topic1 = "iot-assignment-sss"
+topic1 = "iot-assignment-sss/onehot"
 
 flag = int(input("Select '1' for sending data manually and '2' for sending through file:"))
 if flag == 1:
@@ -35,5 +35,6 @@ elif flag == 2:
         client.publish(topic[1],i[1])
         client.publish(topic[2],i[2])
         client.publish(topic[3],i[3])
+        client.publish(topic1,i[4])
         print("published:", i)
-        time.sleep(1)
+        time.sleep(3)

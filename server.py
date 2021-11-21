@@ -29,6 +29,7 @@ elif async_mode == 'gevent':
     monkey.patch_all()
 
 from csv import excel
+from logging import debug
 import paho.mqtt.client as mqtt
 import time
 import os
@@ -38,19 +39,19 @@ import threading
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 
-
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 
-@socketio.on('send message',namespace="/test")
-def test_message(
-        message):  # test_message() is the event callback function.
-    print(message)
-    emit('my response',
-            {'data': message})  # Trigger a new event called "my response"
-    print("msg sent")
-    # that can be caught by another callback later in the program.
+
+# @socketio.on('send message', namespace="/test")
+# def test_message(message):  # test_message() is the event callback function.
+#     print(message)
+#     emit('my response',
+#          {'data': message})  # Trigger a new event called "my response"
+#     print("msg sent")
+#     # that can be caught by another callback later in the program.
+
 
 @app.route('/')
 def index():
@@ -63,12 +64,38 @@ def index():
     return render_template('index.html')
 
 
-
 def t1():
+    topic = [
+        "iot-assignment-sss/ultra-sensor", "iot-assignment-sss/force-sensor",
+        "iot-assignment-sss/gas-sensor", "iot-assignment-sss/motion-sensor","iot-assignment-sss/onehot"
+    ]
+
     def on_message(client, userdata, message):
-        print("received message: ", str(message.payload.decode("utf-8")))
-        socketio.emit("send message", {"data": str(message.payload.decode("utf-8"))}, namespace="/test")
-        print("emitted ig")
+        if message.topic == "iot-assignment-sss/ultra-sensor":
+            socketio.emit("send ultra",
+                      {"data": str(message.payload.decode("utf-8"))},
+                      namespace="/test")
+        elif message.topic == "iot-assignment-sss/force-sensor":
+            socketio.emit("send force",
+                      {"data": str(message.payload.decode("utf-8"))},
+                      namespace="/test")
+        elif message.topic == "iot-assignment-sss/gas-sensor":
+            socketio.emit("send gas",
+                      {"data": str(message.payload.decode("utf-8"))},
+                      namespace="/test")
+        elif message.topic == "iot-assignment-sss/motion-sensor":
+            socketio.emit("send motion",
+                      {"data": str(message.payload.decode("utf-8"))},
+                      namespace="/test")
+        elif message.topic == "iot-assignment-sss/onehot":
+            socketio.emit("send one-hot",
+                      {"data": str(message.payload.decode("utf-8"))},
+                      namespace="/test")
+        print(str(message.payload.decode("utf-8")))
+
+    def on_connect(client, userdata, flags, rc):
+        for i in topic:
+            client.subscribe(i)
 
     # def on_message2(client, userdata, message):
     #     print("received message: ", str(message.payload.decode("utf-8")))
@@ -82,17 +109,14 @@ def t1():
 
     client.connect(mqttBroker)
     print("Connected to MQTT server!!!")
+    client.on_connect = on_connect
     client.loop_start()
-    client.subscribe("iot-assignment-sss")
     client.on_message = on_message
-
-    # client.message_callback_add("iot-assignemnt-sss/ultra-sensor", on_message)
-    # client.message_callback_add("iot-assignemnt-sss/force-sensor", on_message2)
-    # client.message_callback_add("iot-assignemnt-sss", on_message3)
 
     time.sleep(300)
     client.loop_stop()
 
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, debug=True)
+    # socketio.run(app, debug=True, host="192.168.1.39")
