@@ -1,3 +1,33 @@
+async_mode = None
+
+if async_mode is None:
+    try:
+        import eventlet
+        async_mode = 'eventlet'
+    except ImportError:
+        pass
+
+    if async_mode is None:
+        try:
+            from gevent import monkey
+            async_mode = 'gevent'
+        except ImportError:
+            pass
+
+    if async_mode is None:
+        async_mode = 'threading'
+
+    print('async_mode is ' + async_mode)
+
+# monkey patching is necessary because this application uses a background
+# thread
+if async_mode == 'eventlet':
+    import eventlet
+    eventlet.monkey_patch()
+elif async_mode == 'gevent':
+    from gevent import monkey
+    monkey.patch_all()
+
 from csv import excel
 import paho.mqtt.client as mqtt
 import time
@@ -9,43 +39,36 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 
 
-def t2(indata):
-    app = Flask(__name__)
-    socketio = SocketIO(app, async_mode='threading')
-    
-    def task1():
-            while 1:
-                try:
-                    msg = indata.pop()
-                    print(msg)
-                    socketio.emit("send message", {"data": msg})
-                    print("EMITED")
-                    time.sleep(2)
-                except:
-                    time.sleep(2)
+app = Flask(__name__)
+socketio = SocketIO(app, async_mode=async_mode)
+thread = None
 
-    @socketio.on('got_message')
-    def test_message(message):  # test_message() is the event callback function.
-        print(message)
-        emit('my response',{'data': message})  # Trigger a new event called "my response"
-        print("msg sent")
-        # that can be caught by another callback later in the program.
+@socketio.on('send message',namespace="/test")
+def test_message(
+        message):  # test_message() is the event callback function.
+    print(message)
+    emit('my response',
+            {'data': message})  # Trigger a new event called "my response"
+    print("msg sent")
+    # that can be caught by another callback later in the program.
 
-    @app.route('/')
-    def index():
-        
-        x = threading.Thread(target=task1)
-        x.start()
-        return render_template('index.html')
-    
-    socketio.run(app)
+@app.route('/')
+def index():
+
+    global thread
+    if thread is None:
+        thread = threading.Thread(target=t1)
+        thread.daemon = True
+        thread.start()
+    return render_template('index.html')
 
 
-def t1(putdata):
+
+def t1():
     def on_message(client, userdata, message):
-        print("received message: " ,str(message.payload.decode("utf-8")))
-        putdata.append(str(message.payload.decode("utf-8")))
-        print(putdata)
+        print("received message: ", str(message.payload.decode("utf-8")))
+        socketio.emit("send message", {"data": str(message.payload.decode("utf-8"))}, namespace="/test")
+        print("emitted ig")
 
     # def on_message2(client, userdata, message):
     #     print("received message: ", str(message.payload.decode("utf-8")))
@@ -72,9 +95,4 @@ def t1(putdata):
 
 
 if __name__ == '__main__':
-    q = []
-    t11 = threading.Thread(target=t1, args=(q,))
-    t22 = threading.Thread(target=t2, args=(q,))
-
-    t11.start()
-    t22.start()
+    socketio.run(app)
