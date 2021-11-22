@@ -34,6 +34,10 @@
         //$("#ultrapar").addClass("card text-white bg-danger mb-4 column h-100")
         console.log(id)
         $("#"+id).parent().parent().removeClass().addClass("card text-white bg-primary mb-4 column h-100")
+        if(id.substr(id.length - 1)=="1"){
+          console.log(id.substring(0, id.length - 2)+"2")
+          $("#"+id.substring(0, id.length - 1)+"2").html("OFF")
+        }
       }
       namespace = "/test";
       // Client Side Javascript to receive numbers.
@@ -45,27 +49,51 @@
         // this is a callback that triggers when the "my response" event is emitted by the server.
         socket.on("send ultra", function (msg) {
           $("#ultra").html("<p>Distance: " + msg.data + "</p>");
+          $("#ultra2").html("ON");
           $("#ultrapar").addClass("card text-white bg-danger mb-4 column h-100")
+          $("#ultra1").parent().parent().addClass("card text-white bg-danger mb-4 column h-100")
         });
 
         socket.on("send force", function (msg) {
           $("#force").html("<p>Force: " + msg.data + "</p>");
+          $("#force2").html("ON");
           $("#forcepar").addClass("card text-white bg-danger mb-4 column h-100")
+          $("#force1").parent().parent().addClass("card text-white bg-danger mb-4 column h-100")
         });
 
         socket.on("send gas", function (msg) {
           $("#gas").html("<p>Parts per million (Gas): " + msg.data + "</p>");
+          $("#gas2").html("ON");
           $("#gaspar").addClass("card text-white bg-danger mb-4 column h-100")
+          $("#gas1").parent().parent().addClass("card text-white bg-danger mb-4 column h-100")
+
         });
 
         socket.on("send motion", function (msg) {
           $("#motion").html("<p>PIR sensor value: " + msg.data + "</p>");
+          $("#motion2").html("ON");
           $("#motionpar").addClass("card text-white bg-danger mb-4 column h-100")
+          $("#motion1").parent().parent().addClass("card text-white bg-danger mb-4 column h-100")
         });
 
         socket.on("send one-hot", function (msg) {
-          console.log("got something: ", msg.data[0]);
-          $("#dash").append("<p>Received onehot: " + msg.data + "</p>");
+          console.log("got something: ", msg.data);
+          if(msg.data[0]==1){
+            $("#ultra1").parent().parent().removeClass().addClass("card text-white bg-danger mb-4 column h-100")
+            $("#ultra2").html("ON")
+          }
+          if(msg.data[1]==1){
+            $("#force1").parent().parent().removeClass().addClass("card text-white bg-danger mb-4 column h-100")
+            $("#force2").html("ON")
+          }
+          if(msg.data[2]==1){
+            $("#gas1").parent().parent().removeClass().addClass("card text-white bg-danger mb-4 column h-100")
+            $("#gas2").html("ON")
+          }
+          if(msg.data[3]==1){
+            $("#motion1").parent().parent().removeClass().addClass("card text-white bg-danger mb-4 column h-100")
+            $("#motion2").html("ON")
+          }
         });
         //example of triggering an event on click of a form submit button
       });
@@ -73,12 +101,77 @@
   </head>
   <body>
     <center>
-      <div id="dash">
-
-      </div>
+      <header>
+        <div class="collapse bg-dark" id="navbarHeader">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-8 col-md-7 py-4">
+                <h4 class="text-white">About</h4>
+                <p class="text-muted">Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.</p>
+              </div>
+              <div class="col-sm-4 offset-md-1 py-4">
+                <h4 class="text-white">Contact</h4>
+                <ul class="list-unstyled">
+                  <li><a href="#" class="text-white">Follow on Twitter</a></li>
+                  <li><a href="#" class="text-white">Like on Facebook</a></li>
+                  <li><a href="#" class="text-white">Email me</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="navbar navbar-dark bg-dark box-shadow">
+          <div class="container d-flex justify-content-between">
+            <a href="#" class="navbar-brand d-flex align-items-center">
+              <center><strong>IOT Assignment</strong></center>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+      <section class="jumbotron text-center" id="dash" style="display: flex; text-align: center;">
+            <div class="card text-white bg-primary mb-4 column h-100" style="width: 200px; height: 200px;margin: auto;background-color: blue;color: white;">
+              <div class="card-body">
+                <h5 class="card-title">Ultrasonic Sensor:</h5>
+                <h5 class="card-title" id="ultra2">OFF</h5>
+              </div>
+              <div class="card-footer">
+                <button type="button" id="ultra1" onclick="turnoff(this.id)" class="btn btn-warning" >TurnOff</button>
+              </div>
+            </div>
+            <div class="card text-white bg-primary mb-4 column h-100" style="width: 200px; height: 200px;margin: auto;background-color: blue;color: white;" >
+              <div class="card-body">
+                <h5 class="card-title">Force Sensor: </h5>
+                <h5 class="card-title" id="force2">OFF</h5>
+              </div>
+              <div class="card-footer">
+                <button type="button" id="force1" onclick="turnoff(this.id)" class="btn btn-warning" >TurnOff</button>
+              </div>
+            </div>
+            <div class="card text-white bg-primary mb-4 column h-100" style="width: 200px; height: 200px;margin: auto;background-color: blue;color: white;">
+              <div class="card-body">
+                <h5 class="card-title" >Gas Sensor: </h5>
+                <h5 class="card-title" id="gas2">OFF</h5>
+              </div>
+              <div class="card-footer">
+                <button type="button" id="gas1" onclick="turnoff(this.id)" class="btn btn-warning" >TurnOff</button>
+              </div>
+            </div>
+              <div class="card text-white bg-primary mb-4 column h-100" style="width: 200px; height: 200px;margin: auto;background-color: blue;color: white;">
+                <div class="card-body">
+                  <h5 class="card-title">Motion Sensor: </h5>
+                  <h5 class="card-title" id="motion2">OFF</h5>
+                </div>
+                <div class="card-footer">
+                  <button type="button" id="motion1" onclick="turnoff(this.id)" class="btn btn-warning" >TurnOff</button>
+                </div>
+              </div>
+      </section>
       <div class="container">
         <div class="row justify-content-center">
-          <div class="col-lg-4 d-flex align-items-stretch" >
+          <div class="col-lg-4 d-flex align-items-stretch" style="margin: 50px;">
             <div
               class="card text-white bg-primary mb-4 column h-100"
               style="max-width: 18rem" id="ultrapar"
@@ -91,7 +184,7 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-4 d-flex align-items-stretch">
+          <div class="col-lg-4 d-flex align-items-stretch" style="margin: 50px;">
             <div
               class="card text-white bg-primary mb-4 column h-100"
               style="max-width: 18rem" id="forcepar"
@@ -106,7 +199,7 @@
           </div>
         </div>
         <div class="row justify-content-center">
-          <div class="col-lg-4 d-flex align-items-stretch">
+          <div class="col-lg-4 d-flex align-items-stretch" style="margin: 50px;">
             <div
               class="card text-white bg-primary mb-4 column h-100"
               style="max-width: 18rem" id="gaspar"
@@ -121,7 +214,7 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-4 d-flex align-items-stretch">
+          <div class="col-lg-4 d-flex align-items-stretch" style="margin: 50px;">
             <div
               class="card text-white bg-primary mb-4 column h-100"
               style="max-width: 18rem" id="motionpar"
