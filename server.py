@@ -1,3 +1,4 @@
+import signal
 async_mode = None
 
 if async_mode is None:
@@ -75,22 +76,27 @@ def t1():
             socketio.emit("send ultra",
                       {"data": str(message.payload.decode("utf-8"))},
                       namespace="/test")
+            fp.write("ultra:"+str(message.payload.decode("utf-8"))+"\n")
         elif message.topic == "iot-assignment-sss/force-sensor":
             socketio.emit("send force",
                       {"data": str(message.payload.decode("utf-8"))},
                       namespace="/test")
+            fp.write("force:"+str(message.payload.decode("utf-8"))+"\n")
         elif message.topic == "iot-assignment-sss/gas-sensor":
             socketio.emit("send gas",
                       {"data": str(message.payload.decode("utf-8"))},
                       namespace="/test")
+            fp.write("gas:"+str(message.payload.decode("utf-8"))+"\n")
         elif message.topic == "iot-assignment-sss/motion-sensor":
             socketio.emit("send motion",
                       {"data": str(message.payload.decode("utf-8"))},
                       namespace="/test")
+            fp.write("motion:"+str(message.payload.decode("utf-8"))+"\n")
         elif message.topic == "iot-assignment-sss/onehot":
             socketio.emit("send one-hot",
                       {"data": str(message.payload.decode("utf-8"))},
                       namespace="/test")
+            fp.write("onehot:"+str(message.payload.decode("utf-8"))+"\n")
         print(str(message.payload.decode("utf-8")))
 
     def on_connect(client, userdata, flags, rc):
@@ -102,7 +108,6 @@ def t1():
 
     # def on_message3(client, userdata, message):
     #     print("received message: ", str(message.payload.decode("utf-8")))
-
     mqttBroker = "test.mosquitto.org"
 
     client = mqtt.Client("Server1")
@@ -118,5 +123,11 @@ def t1():
 
 
 if __name__ == '__main__':
+    global fp
+    fp = open("serv_data.csv","a")
+    def handler(signum, frame):
+            fp.close()
+            exit(1)
+    signal.signal(signal.SIGINT, handler)
     socketio.run(app, debug=True)
     # socketio.run(app, debug=True, host="192.168.1.39")
