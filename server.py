@@ -64,6 +64,14 @@ def index():
         thread.start()
     return render_template('index.html')
 
+@app.route('/graphs')
+def graphs():
+    global thread
+    if thread is None:
+        thread = threading.Thread(target=t1)
+        thread.daemon = True
+        thread.start()
+    return render_template('graph.html')
 
 def t1():
     topic = [
